@@ -1,0 +1,90 @@
+spring:
+  # 应用名称
+  application:
+    name: MyOrderBackend
+
+  # 数据库配置
+  datasource:
+    url: jdbc:mysql://localhost:3306/myorderdb?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # JPA配置
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        enable_lazy_load_no_trans: true
+    open-in-view: false
+
+  # JSON配置
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+    serialization:
+      write-dates-as-timestamps: false
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+# 服务器配置
+server:
+  port: 8081
+  address: 0.0.0.0
+  servlet:
+    context-path: /api
+
+# 微信小程序配置
+wx:
+  app-id: wx031159e3e8842469
+  app-secret: e0183fda1bf654525d34059d1817c92c
+  login-url: https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code
+  pay:
+    appId: 你的小程序appId
+    mchId: 你的商户号
+    mchKey: 你的商户密钥
+    keyPath: 你的商户证书路径（如果需要）
+    notifyUrl: 你的支付回调地址
+
+# 日志配置
+logging:
+  level:
+    com.example.myorder: DEBUG
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: method
+  packages-to-scan: com.example.myorder.controller
+
+myorder:
+  openapi:
+    dev-url: http://localhost:8081/api
+
+jwt:
+  secret: your_jwt_secret_key_must_be_very_long_at_least_256_bits
+  expiration: 86400000 # 24小时，单位：毫秒
+
+oss:
+  endpoint: oss-cn-hangzhou.aliyuncs.com
+  accessKeyId: LTAI5tC3tuhYUykDjmwAStXc
+  accessKeySecret: FencyViZ8OyyFLticRLuMq6LrGnn4d
+  bucketName: web-tlias-kingdol
+
+tio:
+  websocket:
+    server:
+      ip: 127.0.0.1
+      heartbeat-timeout: 600000
+    cluster:
+      redis:
+        port: 6379
