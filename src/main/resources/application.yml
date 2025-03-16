@@ -76,8 +76,8 @@ jwt:
 
 oss:
   endpoint: oss-cn-hangzhou.aliyuncs.com
-  accessKeyId: LTAI5tC3tuhYUykDjmwAStXc
-  accessKeySecret: FencyViZ8OyyFLticRLuMq6LrGnn4d
+  accessKeyId: 
+  accessKeySecret: 
   bucketName: web-tlias-kingdol
 
 tio:
