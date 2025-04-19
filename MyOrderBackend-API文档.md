@@ -94,9 +94,3 @@
 
 ### 创建分类
 `POST /api/categories`
-
-oss:
-endpoint: oss-cn-hangzhou.aliyuncs.com
-accessKeyId: LTAI5tKYi2j4girAc1hEuAqL
-accessKeySecret: BZFTiKHkzN4VArVpaxHvb18efnBmtY
-bucketName: web-tlias-kingdol
