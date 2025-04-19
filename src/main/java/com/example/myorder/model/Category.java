@@ -3,6 +3,8 @@ package com.example.myorder.model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +23,8 @@ public class Category {
     private Boolean available = true;  // 是否可用
     
     @JsonManagedReference
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    @ToString.Exclude // 或者使用 exclude = "menuItems" 在类级别
     private List<MenuItem> menuItems = new ArrayList<>();
     
     @Column(updatable = false)

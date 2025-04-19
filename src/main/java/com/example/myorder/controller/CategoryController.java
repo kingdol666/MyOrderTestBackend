@@ -1,5 +1,6 @@
 package com.example.myorder.controller;
 
+import com.example.myorder.dto.CategoryDTO;
 import com.example.myorder.model.Category;
 import com.example.myorder.service.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -35,14 +36,20 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
+    public ResponseEntity<Category> createCategory(@RequestBody CategoryDTO category) {
+        System.out.println("category"+ category);
         return ResponseEntity.ok(categoryService.createCategory(category));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Category> updateCategory(
             @PathVariable Long id, 
-            @RequestBody Category category) {
+            @RequestBody CategoryDTO categorydto) {
+        Category category = categoryService.getCategory(id);
+        category.setName(categorydto.getName());
+        category.setDescription(categorydto.getDescription());
+        category.setAvailable(categorydto.getAvailable());
+        category.setUpdateTime(categorydto.getUpdateTime());
         return ResponseEntity.ok(categoryService.updateCategory(id, category));
     }
 

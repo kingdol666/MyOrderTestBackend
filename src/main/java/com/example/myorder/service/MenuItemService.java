@@ -22,7 +22,8 @@ public class MenuItemService {
     private MenuItemRepository menuItemRepository;
     @Autowired
     private CategoryService categoryService;
-    
+    @Autowired
+    private OssService ossService;
 
     // 获取推荐菜品
     public List<MenuItem> getRecommendItems() {
@@ -55,7 +56,7 @@ public class MenuItemService {
     // 获取所有菜品
     public List<MenuItem> getAllMenuItems() {
         try {
-            return menuItemRepository.findByAvailableTrue();
+            return menuItemRepository.findAllWithCategory();
         } catch (Exception e) {
             log.error("获取菜品列表失败", e);
             throw new RuntimeException("获取菜品列表失败");
@@ -82,6 +83,10 @@ public class MenuItemService {
         }
     }
 
+    public MenuItem getMenuItemByName(String name) {
+        return menuItemRepository.findByName(name);
+    }
+
     // 搜索菜品
     public List<MenuItem> searchMenuItems(String keyword) {
         return menuItemRepository.findByNameContainingAndAvailableTrue(keyword);
@@ -104,12 +109,30 @@ public class MenuItemService {
         return menuItemRepository.save(menuItem);
     }
 
+
+    public void updateMenuItem(MenuItem menuItem, Long categoryId) {
+        // 检查菜品是否存在
+        MenuItem existingMenuItem = menuItemRepository.findById(menuItem.getId())
+                .orElseThrow(() -> new RuntimeException("菜品不存在"));
+
+        // 更新菜品信息
+        existingMenuItem.setName(menuItem.getName());
+        existingMenuItem.setDescription(menuItem.getDescription());
+        existingMenuItem.setPrice(menuItem.getPrice());
+        if(menuItem.getImageUrl() != null)
+         existingMenuItem.setImageUrl(menuItem.getImageUrl());
+        existingMenuItem.setAvailable(menuItem.getAvailable());
+        existingMenuItem.setCategory(categoryService.getCategory(categoryId));
+
+        // 保存更新后的菜品
+        menuItemRepository.save(existingMenuItem);
+    }
     public List<MenuItemDTO> getAllMenuItemsDTO() {
         List<MenuItem> items = menuItemRepository.findByAvailableTrue();
         return items.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    private MenuItemDTO convertToDTO(MenuItem menuItem) {
+    public MenuItemDTO convertToDTO(MenuItem menuItem) {
         MenuItemDTO dto = new MenuItemDTO();
         BeanUtils.copyProperties(menuItem, dto);
         if (menuItem.getCategory() != null) {
@@ -117,5 +140,21 @@ public class MenuItemService {
             dto.setCategoryName(menuItem.getCategory().getName());
         }
         return dto;
+    }
+
+    public void deleteMenuItem(Long id) {
+        // 检查菜品是否存在
+        MenuItem existingMenuItem = menuItemRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("菜品不存在"));
+        System.out.println("删除菜品：" + existingMenuItem.getName());
+        // 删除菜品
+        menuItemRepository.delete(existingMenuItem);
+
+        // 删除OSS中的图片
+        if (existingMenuItem.getImageUrl() != null && !existingMenuItem.getImageUrl().isEmpty()) {
+            // 提取文件名
+            String fileName = existingMenuItem.getName();
+            ossService.deleteFile(fileName);
+        }
     }
 } 

@@ -12,8 +12,8 @@ public class MenuItemDTO {
     private BigDecimal price;
     private String imageUrl;
     private Boolean available;
-    private boolean isRecommend;
-    private int salesCount;
+    private Boolean isRecommend;
+    private Integer salesCount;
     private Long categoryId;
     private String categoryName;
     private LocalDateTime createTime;

@@ -23,4 +23,11 @@ public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
     // 获取热销菜品，按销量降序排序，限制前10个
     @Query("SELECT m FROM MenuItem m WHERE m.available = true ORDER BY m.salesCount DESC")
     Page<MenuItem> findHotItems(Pageable pageable);
-} 
+
+    @Query("SELECT m FROM MenuItem m WHERE m.name = :name")
+    MenuItem findByName(String name);
+
+    // 获取所有可用菜品并加载关联的 Category
+    @Query("SELECT m FROM MenuItem m JOIN FETCH m.category")
+    List<MenuItem> findAllWithCategory();
+}

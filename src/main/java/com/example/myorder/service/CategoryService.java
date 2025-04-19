@@ -1,5 +1,6 @@
 package com.example.myorder.service;
 
+import com.example.myorder.dto.CategoryDTO;
 import com.example.myorder.model.Category;
 import com.example.myorder.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,19 +30,19 @@ public class CategoryService {
 
     // 创建分类
     @Transactional
-    public Category createCategory(Category category) {
+    public Category createCategory(CategoryDTO category) {
         // 检查名称是否重复
         if (categoryRepository.existsByName(category.getName())) {
             throw new RuntimeException("分类名称已存在");
         }
+        Category _category = new Category();
+        _category.setName(category.getName());
+        _category.setDescription(category.getDescription());
+        _category.setAvailable(category.getAvailable());
+        _category.setCreateTime(category.getCreateTime());
+        _category.setUpdateTime(category.getUpdateTime());
         
-        // 设置默认值
-        if (category.getSort() == null) {
-            category.setSort(0);
-        }
-        category.setAvailable(true);
-        
-        return categoryRepository.save(category);
+        return categoryRepository.save(_category);
     }
 
     // 更新分类

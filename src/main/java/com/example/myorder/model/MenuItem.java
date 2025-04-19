@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
+import me.chanjar.weixin.common.annotation.Required;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,9 +20,10 @@ public class MenuItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Required
     private String name;
     private String description;
+    @Required
     private BigDecimal price;
     private String imageUrl;
     private Boolean available = true;
@@ -35,13 +38,13 @@ public class MenuItem {
     @Column
     private LocalDateTime updateTime;
 
-    private boolean isRecommend;
-    private int salesCount;
+    private Boolean isRecommend;
+    private Integer salesCount;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER) // 配置 Eager Loading
     @JoinColumn(name = "category_id")
-    private Category category; // 菜品分类
+    private Category category;
 
     @PrePersist
     protected void onCreate() {
