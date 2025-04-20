@@ -27,11 +27,12 @@ public class OssService {
      */
     public String uploadFile(String fileName, InputStream inputStream) {
         fileName = addImagesPrefix(fileName);
+        String realFileName = getFileUrl(fileName);
         PutObjectRequest putObjectRequest = new PutObjectRequest(
                 ossConfig.getBucketName(), fileName, inputStream);
         System.out.println("Uploading file to OSS: " + fileName);
         ossClient.putObject(putObjectRequest);
-        return getFileUrl(fileName);
+        return getFileUrl(realFileName);
     }
 
     /**

@@ -2,6 +2,7 @@ package com.example.myorder.service;
 
 import com.example.myorder.dto.OrderDTO;
 import com.example.myorder.dto.OrderItemDTO;
+import com.example.myorder.dto.OrderVO;
 import com.example.myorder.dto.UserDTO;
 import com.example.myorder.model.*;
 import com.example.myorder.repository.*;
@@ -42,6 +43,7 @@ public class OrderService {
         
         Order order = new Order();
         order.setUser(user);
+        order.setOrderNumber("num:"+System.currentTimeMillis());
         order.setStatus(Order.STATUS_PENDING);
         
         BigDecimal totalAmount = BigDecimal.ZERO;
@@ -209,5 +211,46 @@ public class OrderService {
         orderDTO.setOrderItems(orderItemDTOs);
         
         return orderDTO;
+    }
+
+    public Boolean deleteOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new RuntimeException("订单不存在"));
+
+        // 检查订单状态
+        if (!Order.STATUS_PENDING.equals(order.getStatus())) {
+            throw new RuntimeException("订单状态不正确");
+        }
+
+        // 删除订单
+        orderRepository.delete(order);
+        return true;
+    }
+
+    public List<OrderVO> getAllOrders() {
+        return orderRepository.findAll().stream().map(
+                order -> {
+                    OrderVO orderVo = new OrderVO();
+                    orderVo.setId(order.getId());
+                    orderVo.setOrderNumber(order.getOrderNumber());
+                    orderVo.setStatus(order.getStatus());
+                    orderVo.setTotalAmount(order.getTotalAmount());
+                    orderVo.setCreateTime(order.getCreateTime());
+                    orderVo.setUpdateTime(order.getUpdateTime());
+                    orderVo.setRemark(order.getRemark());
+                    orderVo.setUserOpenId(order.getUser().getOpenId());
+                    orderVo.setUserName(order.getUser().getNickName());
+                    orderVo.setOrderItems(order.getOrderItems());
+                    return orderVo;
+                }
+        ).toList();
+    }
+
+    public void handleOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        order.setStatus(Order.STATUS_PREPARING);
+        orderRepository.save(order);
     }
 }

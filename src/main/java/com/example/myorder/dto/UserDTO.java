@@ -6,5 +6,13 @@ import lombok.Data;
 public class UserDTO {
     private Long id;
     private String nickname;
-    private String phone;
-} 
+
+    public UserDTO(Long id, String nickName) {
+        this.id = id;
+        this.nickname = nickName;
+    }
+
+    public UserDTO() {
+
+    }
+}

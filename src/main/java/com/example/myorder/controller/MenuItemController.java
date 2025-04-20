@@ -141,7 +141,6 @@ public class MenuItemController {
             // --- 现在你可以使用 file, menuItem, categoryId ---
             // ... 你的业务逻辑 ...
             if (menuItemService.getMenuItemByName(menuItem.getName()) == null) {
-                menuItemService.createMenuItem(menuItem, categoryId);
                 // 获取文件名
                 String fileName = menuItem.getName();
                 // 获取文件输入流
@@ -149,7 +148,7 @@ public class MenuItemController {
                 // 调用 OssService 上传文件
                 String fileUrl = ossService.uploadFile(fileName, inputStream);
                 menuItem.setImageUrl(fileUrl);
-                menuItemService.updateMenuItemCategory(menuItem.getId(), categoryId);
+                menuItemService.createMenuItem(menuItem, categoryId);
                 return ResponseEntity.ok("File uploaded successfully: ");
             } else {
                 return ResponseEntity.badRequest().body("菜品已存在");

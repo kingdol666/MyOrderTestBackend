@@ -34,6 +34,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "/api/user/wx-login",
                         "/api/menu-items/**",
                         "/api/categories/**",
+                        "/api/orders/**",
                         "/api-docs/**",
                         "/swagger-ui/**",
                         "/api/oss/**");

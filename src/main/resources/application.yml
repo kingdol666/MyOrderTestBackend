@@ -77,11 +77,6 @@ jwt:
   secret: your_jwt_secret_key_must_be_very_long_at_least_256_bits
   expiration: 86400000 # 24小时，单位：毫秒
 
-#oss:
-#  endpoint: oss-cn-hangzhou.aliyuncs.com
-#  accessKeyId: LTAI5tKYi2j4girAc1hEuAqL
-#  accessKeySecret: BZFTiKHkzN4VArVpaxHvb18efnBmtY
-#  bucketName: web-tlias-kingdol
 
 tio:
   websocket:

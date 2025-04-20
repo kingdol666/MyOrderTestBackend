@@ -1,5 +1,6 @@
 package com.example.myorder.controller;
 
+import com.example.myorder.dto.OrderVO;
 import com.example.myorder.model.Order;
 import com.example.myorder.service.OrderService;
 import com.example.myorder.service.WxPaymentService;
@@ -11,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import com.github.binarywang.wxpay.bean.notify.WxPayNotifyResponse;
@@ -25,7 +28,7 @@ import org.springframework.data.domain.Page;
 public class OrderController {
     private final OrderService orderService;
     private final WxPaymentService wxPaymentService;
-    
+
     @Operation(
         summary = "创建订单",
         description = "从用户购物车创建新订单"
@@ -53,6 +56,10 @@ public class OrderController {
         return orderService.getOrderDetailsWithItems(orderId);
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<OrderVO>> getAllOrders() {
+        return ResponseEntity.ok(orderService.getAllOrders());
+    }
 
 
     @Operation(
@@ -82,6 +89,18 @@ public class OrderController {
         return orderService.getUserOrders(userId, page, size, status);
     }
 
+    @DeleteMapping("/{orderId}")
+    public ResponseEntity<String> deleteOrder(@PathVariable Long orderId){
+        try {
+            orderService.deleteOrder(orderId);
+            return ResponseEntity.ok("删除成功");
+        } catch (Exception e) {
+            log.error("删除订单失败", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("删除订单失败: " + e.getMessage());
+        }
+    }
+
     // 获取微信支付参数
     @GetMapping("/{orderId}/wx-pay-params")
     public ResponseEntity<?> getWxPayParams(@PathVariable Long orderId) {
@@ -103,6 +122,21 @@ public class OrderController {
         } catch (Exception e) {
             log.error("处理支付回调异常", e);
             return WxPayNotifyResponse.fail("处理失败");
+        }
+    }
+
+    @PostMapping("/{orderId}/handle")
+    public ResponseEntity<String> handleOrder(
+        @Parameter(description = "订单ID")
+        @PathVariable Long orderId
+    ) {
+        try {
+            orderService.handleOrder(orderId);
+            return ResponseEntity.ok("订单完成");
+        } catch (Exception e) {
+            log.error("订单完成失败", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("订单完成失败: " + e.getMessage());
         }
     }
 } 
